@@ -2,10 +2,15 @@ import 'package:avatar_glow/avatar_glow.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:hexcolor/hexcolor.dart';
-import 'package:tic_tac_toe/NewGame/NewGame2P.dart';
-import 'package:tic_tac_toe/constant.dart';
+import 'package:tic_tac_toe/features/New_Game/NewGame2P.dart';
+import 'package:tic_tac_toe/features/pick_your_side/pick_your_side.dart';
+import 'package:tic_tac_toe/util/constant/constant.dart';
+
+import 'package:tic_tac_toe/util/constant/constant.dart';
+import 'package:tic_tac_toe/util/widgets/button.dart';
 
 class HomeScreen extends StatefulWidget {
+
   const HomeScreen({Key? key}) : super(key: key);
 
   @override
@@ -17,7 +22,8 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
         body: Center(
-      child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
+      child: Column(
+          mainAxisAlignment: MainAxisAlignment.center, children: [
         Expanded(
           child: Padding(
             padding: const EdgeInsets.only(top: 120),
@@ -32,7 +38,7 @@ class _HomeScreenState extends State<HomeScreen> {
             child: AvatarGlow(
               endRadius: 140,
               duration: Duration(seconds: 2),
-              glowColor: Colors.white,
+              glowColor: Colors.deepPurple,
               repeat: true,
               repeatPauseDuration: Duration(seconds: 1),
               startDelay: Duration(seconds: 1),
@@ -41,46 +47,29 @@ class _HomeScreenState extends State<HomeScreen> {
                     border: Border.all(
                       style: BorderStyle.none,
                     ), // Border.all
-
                     shape: BoxShape.circle), // BoxDecoration
-
                 child: CircleAvatar(
                   backgroundColor: Colors.grey[900],
-
                   child: Container(
                     child: Image.asset(
                       'assests/images/tic_tac_toe.png',
                       fit: BoxFit.scaleDown,
+
                     ), // Image.asset
-                  ), // Container radius: 80.0,
+                  ), // Container
+                   radius: 80.0,
                 ), // CircleAvatar
               ), // Container
             ), // AvatarGlow
           ),
         ),
-        GestureDetector(
-            onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => NewGame2P()),
-              );
-            },
-            child: Padding(
-              padding: EdgeInsets.only(left: 40, right: 40, bottom: 60),
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(20),
-                child: Container(
-                  padding: EdgeInsets.all(30),
-                  color: Colors.white,
-                  child: Center(
-                    child: Text(
-                      "PLAY GAME",
-                      style: myNewFont,
-                    ), // Text
-                  ), // Center // Container
-                ), // ClipRRect 1. //
-              ),
-            ))
+        MyButton(text: "Single Player",bottompadding: 30, onTap: (){
+          NavigateTo(context: context,router:Pickyourside(ai: true,));
+        }),
+        MyButton(text: "With A Friend", onTap: (){
+          NavigateTo(context: context,router:Pickyourside(ai: false,));
+        }),
+
       ]),
     ));
   }

@@ -1,9 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:hexcolor/hexcolor.dart';
-import 'package:tic_tac_toe/constant.dart';
+import 'package:tic_tac_toe/features/Home_Screen/HomeScreen.dart';
+import 'package:tic_tac_toe/util/constant/constant.dart';
+import 'package:tic_tac_toe/util/style/colors.dart';
+import 'package:tic_tac_toe/util/widgets/button.dart';
 class NewGame2P extends StatefulWidget {
-  const NewGame2P({Key? key}) : super(key: key);
+  bool OHTurn=true ;
+   NewGame2P({Key? key,required this.OHTurn}) : super(key: key);
 
   @override
   State<NewGame2P> createState() => _NewGame2PState();
@@ -11,7 +15,7 @@ class NewGame2P extends StatefulWidget {
 
 class _NewGame2PState extends State<NewGame2P> {
   List <String> XOText=['','','','','','','','',''];
-  bool OTurn=true ;
+ // bool OTurn=true ;
   int oScore = 0;
   int xScore = 0;
   int filledBoxes = 0; //deh 3ashan a3ed kam box w ana bl3b w awel ma awsl Ll 9 box yb2a Draw
@@ -20,14 +24,11 @@ class _NewGame2PState extends State<NewGame2P> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        backgroundColor: HexColor('333739'),
-
-        body: Column(
-
+        body:
+        Column(
           children: [
-            SizedBox(height: 15,),
+            SizedBox(height: 20,),
             Expanded(
-              // creating the ScoreBoard
               child: Container(
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -69,10 +70,11 @@ class _NewGame2PState extends State<NewGame2P> {
                 ),
               ),
             ),
+            MyButton(text: "Turn : ${widget.OHTurn ? 'O':'X'}", onTap:(){},bottompadding: 30),
             Expanded(
-              flex: 4,
+              flex: 3,
               child: Padding(
-                padding: const EdgeInsets.all(8.0),
+                padding: const EdgeInsets.symmetric(vertical: 10.0,horizontal: 20),
                 child: GridView.builder(
                   itemCount: 9,
                   gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
@@ -85,7 +87,7 @@ class _NewGame2PState extends State<NewGame2P> {
                       onTap: (){_ClickToPlay(index);},
                       child: Container(
                         decoration: BoxDecoration(
-                            border: Border.all(width: 1,color: Colors.grey.shade700)
+                            border: Border.all(width: 1,color: Colors.purple.shade700)
                         ),
                         child:Center(
                             child: Text(XOText[index],style: TextStyle(fontSize: 50),)),
@@ -98,24 +100,34 @@ class _NewGame2PState extends State<NewGame2P> {
               ),
             ),
             Expanded(
-
-              // Button for Clearing the Enter board
-              // as well as Scoreboard to start allover again
-                child: Container(
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: <Widget>[
-                      RaisedButton(
-                        color: Colors.indigo[50],
-                        textColor: Colors.black,
-                        onPressed: _clearScoreBoard,
-                        child: Text("Clear Score Board"),
-                      ),
-                    ],
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                FloatingActionButton(
+                  backgroundColor:  HexColor('7b61c9'),
+                  onPressed:  _clearScoreBoard,
+                  child:const Icon(
+                    Icons.restart_alt_outlined,size: 40,
                   ),
-                ))
+
+                ),
+                SizedBox(width: 30,),
+                FloatingActionButton(
+                  backgroundColor: HexColor('7b61c9'),
+                  onPressed: () {
+                    NavigateAndFinsh(context: context,router: HomeScreen());
+                  },
+                  child:const Icon(
+                    Icons.home,size: 40,
+                  ),
+
+                ),
 
 
+              ]
+                ,),
+            ),
           ],
         )
 
@@ -123,18 +135,17 @@ class _NewGame2PState extends State<NewGame2P> {
   }
 
   void _ClickToPlay(int index){
-
     setState(() {
-      if(OTurn && XOText[index]=='')
+      if(widget.OHTurn && XOText[index]=='')
       {
         XOText[index]='O';
         filledBoxes++;
       }
-      else if ( !OTurn && XOText[index]==''){
+      else if (!widget.OHTurn && XOText[index]==''){
         XOText[index]='X';
         filledBoxes++;
       }
-      OTurn =!OTurn;
+      widget.OHTurn =!widget.OHTurn;
       _CheckWinner();
     });
   }
@@ -178,12 +189,11 @@ class _NewGame2PState extends State<NewGame2P> {
         context: context,
         builder: (BuildContext context) {
           return AlertDialog(
-            title: Text("\" " + winner + " \" is Winner!!!"),
+            title: Text(" ${winner} is Winner 🥳"),
             actions: [
               FlatButton(
-                child: Text("Play Again"),
+                child: Text("Play Again",style: TextStyle(color: defultColor)),
                 onPressed: () {
-                  OTurn =true;
                   _clearBoard();
                   Navigator.of(context).pop();
                 },
@@ -206,9 +216,8 @@ class _NewGame2PState extends State<NewGame2P> {
             title: Text("Draw"),
             actions: [
               FlatButton(
-                child: Text("Play Again"),
+                child: Text("Play Again",style: TextStyle(color: defultColor)),
                 onPressed: () {
-                  OTurn =true;
                   _clearBoard();
                   Navigator.of(context).pop();
                 },
@@ -236,20 +245,5 @@ class _NewGame2PState extends State<NewGame2P> {
     });
     filledBoxes = 0;
   }
-  void _winning(board, player){
-    if (
-    (board[0] == player && board[1] == player && board[2] == player) ||
-        (board[3] == player && board[4] == player && board[5] == player) ||
-        (board[6] == player && board[7] == player && board[8] == player) ||
-        (board[0] == player && board[3] == player && board[6] == player) ||
-        (board[1] == player && board[4] == player && board[7] == player) ||
-        (board[2] == player && board[5] == player && board[8] == player) ||
-        (board[0] == player && board[4] == player && board[8] == player) ||
-        (board[2] == player && board[4] == player && board[6] == player)
-    ) {
-      // return true;
-    } else {
-      //return false;
-    }
-  }
+
 }
